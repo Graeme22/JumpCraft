@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JumpCraft</title>
+    </head>
+    <body id="body">
+		<style type="text/css">
+            #canvas {
+				background-image: url("background.png");
+				background-repeat: repeat;
+				display: block;
+				margin: 15px auto;
+				border-color: #ffffff;
+				border-width: 2px;
+				border-style: solid;
+				margin: none;
+				padding: none;
+			}
+        </style>
+        <canvas id="canvas" width="700" height="500">This text is displayed if your browser does not support HTML5.</canvas>
+		<script type="text/javascript">
+			/*
+				RELEASE NOTES
+				v0.2 Beta
+				survival added
+				COMING SOON
+				v0.3: will make gravity and will add powerups
+			*/
+			
+			//start here
+			var canvas = document.getElementById("canvas");
+			var ctx = canvas.getContext("2d");
+			var FPS = 50;
+			var v = 0;
+			var m = 0;
+			var mobs2 = [];
+			var mobs3 = [];
+			var text = "";
+			var keys = {
+				up: false,
+				left: false,
+				right: false
+			}
+			var you = {
+				img: new Image(),
+				x: 100,
+				y: 197,
+				vy: 0,
+				ay: 17,
+				width: 28,
+				height: 55,
+				onPig: false
+			}
+			you.img.src = "you.png";
+			var alive = true;
+			function addCoin(type,x,y){
+				coin = new Image();
+				switch(type){
+					case 0:
+						break;
+					case 1:
+						coin.src = "goldNugget.png";
+						ctx.drawImage(coin,x,y);
+						break;
+					case 2:
+						coin.src = "diamond.png";
+						ctx.drawImage(coin,x,y);
+						break;
+				}
+			}
+			function addMob(type,x,y){
+				mob = new Image();
+				//mobs just sit there until v0.3
+				
+				/*
+					0=nothing
+					1=zombie
+					2=skeleton
+					3=creeper
+					4=pigman
+					5=wither
+					6=enderman
+				*/
+				switch(type){
+					case 0:
+						break;
+					case 1:
+						mob.src = "skull_zombie.png";
+						ctx.drawImage(mob,x,y);
+						break;
+					case 2:
+						mob.src = "skull_skeleton.png";
+						ctx.drawImage(mob,x,y);
+						break;
+					case 3:
+						mob.src = "skull_creeper.png";
+						ctx.drawImage(mob,x,y);
+						break;
+					case 4:
+						mob.src = "skull_pigman.png";
+						ctx.drawImage(mob,x,y);
+						break;
+					case 5:
+						mob.src = "skull_wither.png";
+						ctx.drawImage(mob,x,y);
+						break;
+					case 6:
+						mob.src = "skull_ender.png";
+						ctx.drawImage(mob,x,y-2);
+						break;
+				}
+			}
+			function addBlock(type,x,y){
+				block = new Image();
+				/*
+					0=nothing 
+					1=netherrack 
+					2=obsidian
+					3=netherBrick
+					4=netherquartz
+					5=oreCoal
+					6=oreDiamond
+					7=oreRedstone
+					8=soulSand
+					9=stoneMoss
+				*/
+				switch(type){
+					case 0:
+						break;
+					case 1:
+						block.src = "netherrack.png";
+						ctx.drawImage(block,x,y);
+						break;
+					case 2:
+						block.src = "obsidian.png";
+						ctx.drawImage(block,x,y);
+						break;
+					case 3:
+						block.src = "netherBrick.png";
+						ctx.drawImage(block,x,y);
+						break;
+					case 4:
+						block.src = "netherquartz.png";
+						ctx.drawImage(block,x,y);
+						break;
+					case 5:
+						block.src = "oreCoal.png";
+						ctx.drawImage(block,x,y);
+						break;
+					case 6:
+						block.src = "oreDiamond.png";
+						ctx.drawImage(block,x,y);
+						break;
+					case 7:
+						block.src = "oreRedstone.png";
+						ctx.drawImage(block,x,y);
+						break;
+					case 8:
+						block.src = "soulSand.png";
+						ctx.drawImage(block,x,y);
+						break;
+					case 9:
+						block.src = "stoneMoss.png";
+						ctx.drawImage(block,x,y);
+						break;
+				}
+			}
+			var coins_height3 = [0,1,2,0,1,2,0,1,2];
+			var coins_height2 = [0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,1,1];
+			var coins = [0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,0,2,0,0,1,1,0,0,1,0,1,0,0,0,2,1,0,0,1,0,1,0,0,0,1,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,2,2,1,2,1,2,0,2,1,2,0,0,0,0,0,0,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,2,2,2,1,1,1,2,2,1,2,2,1,2,2,1,2,2,2,2,1,1,2,2,0,0,2,2,0,0,0,2,2,0,0,0,0,2,2,2,0,0,0,0,1,1,1,2,0,0,1,1,1,0,0,1,0,1,0,1,0,1,2,2,1,2,1,1,2,2,1,1,0,1,2,1,2,1,2,1,2,1,2,1,2,2,1,2,2,0,0,2,2,1,2,1,2,2,1,2,1,2,2,1,2,0,0,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,2,2];
+			/*
+				0=no coin
+				1=coin
+				2=diamond
+			*/
+			var mobs = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,0,3,0,4,0,5,0,6,0,1,0,2,0,3,0,4,0,5,0,6,0,1,0,2,0,3,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,3];
+			var level_height3 = [6,6,6,6,6,6,6,6,6,6];
+			var level_height2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,6,6];
+			var level = [1,1,2,3,4,5,6,7,8,9,1,1,2,3,4,5,6,7,8,9,5,6,7,5,6,7,5,6,7,6,6,6,0,0,0,0,0,4,5,8,8,2,1,7,8,9,5,4,6,8,5,2,4,8,6,2,5,4,8,9,8,7,7,5,6,4,5,2,4,0,0,0,6,5,8,9,7,5,5,6,5,4,5,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,5,6,5,4,5,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,5,4,6,5,4,6,5,4,6,5,5,4,5,6,6,6,6,6,5,4,6,6,6,6,5,4,6,0,0,0,0,0,0,8,8,8,5,5,6,6,6,6,6,6,6,6,0,6,0,5];
+			var money = 0;
+			function start(){
+				function draw(){
+					if(alive){
+						//draw level
+						for(i=0;i<level.length;i++){
+							addBlock(level[i],i*16+v,450);
+						}
+						//height 2
+						for(i=0;i<level_height2.length;i++){
+							addBlock(level_height2[i],i*16+v,350);
+						}
+						//height 3
+						for(i=0;i<level_height3.length;i++){
+							addBlock(level_height3[i],i*16+v,250);
+						}
+						//coins
+						for(i=0;i<coins.length;i++){
+							addCoin(coins[i],i*16+v,410);
+						}
+						//height 2
+						for(i=0;i<coins_height2.length;i++){
+							addCoin(coins_height2[i],i*16+v,310);
+						}
+						//height 3
+						for(i=0;i<coins_height3.length;i++){
+							addCoin(coins_height3[i],i*16+v,210);
+						}
+						//mobs
+						for(i=0;i<mobs.length;i++){
+							addMob(mobs[i],i*16+v+m,432);
+						}
+						//height 2
+						for(i=0;i<mobs2.length;i++){
+							addMob(mobs2[i],i*16+v+m,332);
+						}
+						//height 3
+						for(i=0;i<mobs3.length;i++){
+							addMob(mobs3[i],i*16+v+m,232);
+						}
+						//character
+						ctx.drawImage(you.img,you.x,you.y,you.width,you.height);
+					}
+				};
+				function update(){
+					ctx.clearRect(0,0,700,500);
+					ctx.font = "25px Garamond";
+					text = "Money: " + money;
+					if(keys.up === true){
+						if(you.onPig === false){
+							you.y -= 9;
+						} else {
+							you.y -= 12;
+						}
+					}
+					if(keys.left === true){
+						if(you.onPig === false){
+							v += 8;
+						} else {
+							v += 12;
+						}
+					}
+					if(keys.right === true){
+						if(you.onPig === false){
+							v -= 8;
+						} else {
+							v -= 12;
+						}
+					}
+					
+					if(you.y >= 500){
+						alive = false;
+					}
+					if(alive){
+						ctx.fillText(text,10,20);
+					}
+					
+					for(var z in coins){
+						if(coins[z] === 1 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 355 && you.y <= 465){
+							coins[z] = 0;
+							money += 1;
+						} else if(coins[z] === 2 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 355 && you.y <= 465){
+							coins[z] = 0;
+							money += 100;
+						}
+					}
+					for(var z in coins_height2){
+						if(coins_height2[z] === 1 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 255 && you.y <= 365){
+							coins_height2[z] = 0;
+							money += 1;
+						} else if(coins_height2[z] === 2 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 255 && you.y <= 365){
+							coins_height2[z] = 0;
+							money += 100;
+						}
+					}
+					for(var z in coins_height3){
+						if(coins_height3[z] === 1 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 155 && you.y <= 265){
+							coins_height3[z] = 0;
+							money += 1;
+						} else if(coins_height3[z] === 2 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 155 && you.y <= 265){
+							coins_height3[z] = 0;
+							money += 100;
+						}
+					}
+					//update char ay,vy
+					you.vy += you.ay / FPS;
+					//kill monsters (and you)
+					for(var z in mobs){
+						if(you.y + 55 >= 430 && you.y + 55 <= 440 && you.x + 20 >= z * 16 + v + m && you.x <= z * 16 + v + 8 + m){
+							mobs[z] = 0;
+						} else if(mobs[z] !== 0 && you.x + 30 >= z * 16 + v + m && you.x <= z * 16 + v + m - 2 && you.y + 55 >= 445 && you.y + 55 <= 455){
+							//kill the Player
+							if(mobs[z] === 3) mobs[z] = 0;
+							alive = false;
+						}
+					}
+					//height 2
+					for(var z in mobs2){
+						if(you.y + 55 >= 330 && you.y + 55 <= 340 && you.x + 20 >= z * 16 + v + m && you.x <= z * 16 + m + v + 8){
+							mobs2[z] = 0;
+						} else if(mobs2[z] !== 0 && you.x + 30 >= z * 16 + v + m && you.x <= z * 16 + m + v - 2 && you.y + 55 >= 345 && you.y + 55 <= 355){
+							//kill the Player
+							if(mobs2[z] === 3) mobs2[z] = 0;
+							alive = false;
+						}
+					}
+					//height 3
+					for(var z in mobs3){
+						if(you.y + 55 >= 230 && you.y + 55 <= 240 && you.x + 20 >= z * 16 + v + m && you.x <= z * 16 + m + v + 8){
+							mobs3[z] = 0;
+						} else if(mobs3[z] !== 0 && you.x + 30 >= z * 16 + v + m && you.x <= z * 16 + m + v - 2 && you.y + 55 >= 245 && you.y + 55 <= 255){
+							//kill the Player
+							if(mobs3[z] === 3) mobs3[z] = 0;
+							alive = false;
+						}
+					}
+					//move monsters for v0.3 will need to use the new operator with the object Monster
+					m -= 1;
+					//collision detection
+					if(you.y + 55 >= 447 && you.x + 18 - v >= 0){
+						you.vy = 0;
+						you.y = 397;
+					}
+					//besides left edge...
+						//v0.3
+					//finally, make the player fall
+					you.y += you.vy;
+					//end update function
+				}
+				function tick(){
+					update();
+					draw();
+				}
+				document.onkeydown = function(e){
+					e = e || window.event;
+					c = e.keyCode;
+					switch(c){
+						case 38:
+						case 87:
+							keys.up = true;
+							break;
+						case 40:
+						case 83:
+							keys.down = true;
+							break;
+						case 37:
+						case 65:
+							keys.left = true;
+							break;
+						case 39:
+						case 68:
+							keys.right = true;
+							break;
+					}
+				}
+				document.onkeyup = function(e){
+					e = e || window.event;
+					r = e.keyCode;
+					switch(r){
+						case 38:
+						case 87:
+							keys.up = false;
+							break;
+						case 40:
+						case 83:
+							keys.down = false;
+							break;
+						case 37:
+						case 65:
+							keys.left = false;
+							break;
+						case 39:
+						case 68:
+							keys.right = false;
+							break;
+					}
+				}
+				setInterval(tick,1000/FPS);
+			};
+			start();
+		//end here
+        </script>
+    </body>
+</html>
