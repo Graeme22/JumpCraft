@@ -165,7 +165,6 @@
 						break;
 				}
 			}
-			var monsters = [];
 			var coins_height3 = [0,1,2,0,1,2,0,1,2];
 			var coins_height2 = [0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,1,1];
 			var coins = [0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,0,2,0,0,1,1,0,0,1,0,1,0,0,0,2,1,0,0,1,0,1,0,0,0,1,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,2,2,1,2,1,2,0,2,1,2,0,0,0,0,0,0,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,2,2,2,1,1,1,2,2,1,2,2,1,2,2,1,2,2,2,2,1,1,2,2,0,0,2,2,0,0,0,2,2,0,0,0,0,2,2,2,0,0,0,0,1,1,1,2,0,0,1,1,1,0,0,1,0,1,0,1,0,1,2,2,1,2,1,1,2,2,1,1,0,1,2,1,2,1,2,1,2,1,2,1,2,2,1,2,2,0,0,2,2,1,2,1,2,2,1,2,1,2,2,1,2,0,0,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,2,2];
@@ -176,6 +175,7 @@
 			*/
 			var lava = new Image();
 			lava.src = "lava.png";
+			var block_under_steve = 22;
 			var mobs = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,0,3,0,4,0,5,0,6,0,1,0,2,0,3,0,4,0,5,0,6,0,1,0,2,0,3,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,3];
 			var level_height3 = [6,6,6,6,6,6,6,6,6,6];
 			var level_height2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,6,6];
@@ -183,87 +183,91 @@
 			var money = 0;
 			function start(){
 				function draw(){
-					if(alive){
-						//draw level
-						for(i=0;i<level.length;i++){
-							addBlock(level[i],i*16+v,450);
-							monsters[i] = i * 16;
-						}
-						//height 2
-						for(i=0;i<level_height2.length;i++){
-							addBlock(level_height2[i],i*16+v,350);
-						}
-						//height 3
-						for(i=0;i<level_height3.length;i++){
-							addBlock(level_height3[i],i*16+v,250);
-						}
-						//coins
-						for(i=0;i<coins.length;i++){
-							addCoin(coins[i],i*16+v,410);
-						}
-						//height 2
-						for(i=0;i<coins_height2.length;i++){
-							addCoin(coins_height2[i],i*16+v,310);
-						}
-						//height 3
-						for(i=0;i<coins_height3.length;i++){
-							addCoin(coins_height3[i],i*16+v,210);
-						}
-						//lava
-						for(i=-50;i<level.length+50;i++){
-							ctx.drawImage(lava,i*16+v,466);
-							ctx.drawImage(lava,i*16+v,482);
-							ctx.drawImage(lava,i*16+v,498);
-						}
-						//mobs
-						for(i=0;i<mobs.length;i++){
-							addMob(mobs[i],i*16+v+m,432);
-						}
-						//height 2
-						for(i=0;i<mobs2.length;i++){
-							addMob(mobs2[i],i*16+v+m,332);
-						}
-						//height 3
-						for(i=0;i<mobs3.length;i++){
-							addMob(mobs3[i],i*16+v+m,232);
-						}
-						//character
-						ctx.drawImage(you.img,you.x,you.y,you.width,you.height);
+					//draw level
+					for(i=0;i<level.length;i++){
+						addBlock(level[i],i*16+v,450);
 					}
+					//height 2
+					for(i=0;i<level_height2.length;i++){
+						addBlock(level_height2[i],i*16+v,350);
+					}
+					//height 3
+					for(i=0;i<level_height3.length;i++){
+						addBlock(level_height3[i],i*16+v,250);
+					}
+					//coins
+					for(i=0;i<coins.length;i++){
+						addCoin(coins[i],i*16+v,410);
+					}
+					//height 2
+					for(i=0;i<coins_height2.length;i++){
+						addCoin(coins_height2[i],i*16+v,310);
+					}
+					//height 3
+					for(i=0;i<coins_height3.length;i++){
+						addCoin(coins_height3[i],i*16+v,210);
+					}
+					//lava
+					for(i=-50;i<level.length+50;i++){
+						ctx.drawImage(lava,i*16+v,466);
+						ctx.drawImage(lava,i*16+v,482);
+						ctx.drawImage(lava,i*16+v,498);
+					}
+					//mobs
+					for(i=0;i<mobs.length;i++){
+						addMob(mobs[i],i*16+v+m,432);
+					}
+					//height 2
+					for(i=0;i<mobs2.length;i++){
+						addMob(mobs2[i],i*16+v+m,332);
+					}
+					//height 3
+					for(i=0;i<mobs3.length;i++){
+						addMob(mobs3[i],i*16+v+m,232);
+					}
+					//character
+					ctx.drawImage(you.img,you.x,you.y,you.width,you.height);
 				};
 				function update(){
 					ctx.clearRect(0,0,700,500);
 					ctx.font = "25px Garamond";
+					block_under_steve = (-v + 336) / 16;
 					text = "Money: " + money;
-					if(keys.up === true){
-						if(you.onPig === false){
-							you.y -= 10;
-						} else {
-							you.y -= 12;
+					block_under_steve = Math.round(block_under_steve);
+					if(alive){
+						if(keys.up === true){
+							if(you.onPig === false){
+								you.y -= 10;
+							} else {
+								you.y -= 12;
+							}
+						}
+						if(keys.left === true){
+							if(you.onPig === false){
+								v += 8;
+							} else {
+								v += 12;
+							}
+						}
+						if(keys.right === true){
+							if(you.onPig === false){
+								v -= 8;
+							} else {
+								v -= 12;
+							}
 						}
 					}
-					if(keys.left === true){
-						if(you.onPig === false){
-							v += 8;
-						} else {
-							v += 12;
-						}
-					}
-					if(keys.right === true){
-						if(you.onPig === false){
-							v -= 8;
-						} else {
-							v -= 12;
-						}
-					}
-					
-					if(you.y >= 500){
+					if(you.y >= 411){
 						alive = false;
 					}
 					if(alive){
 						ctx.fillText(text,10,20);
 					}
-					
+					if(!alive){
+						you.img.src = "youDead.png";
+						you.width = 55;
+						you.height = 28;
+					}
 					for(var z in coins){
 						if(coins[z] === 1 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 355 && you.y <= 465){
 							coins[z] = 0;
@@ -323,12 +327,18 @@
 							alive = false;
 						}
 					}
-					//move monsters for v0.3 will need to use the new operator with the object Monster
+					//move monsters
 					m -= 1;
 					//collision detection
-					if(you.y + 55 >= 447 && you.x + 18 - v >= 0 /*&& monsters[block under steve] !== 0*/){
+					if(you.y + 55 >= 450 && you.x + 18 - v >= 0 && level[block_under_steve] !== 0){
 						you.vy = 0;
-						you.y = 397;
+						if(alive){
+							you.y = 397;
+						} else {
+							you.y = 430;
+						}
+					} else if(!alive){
+						you.y = 446;
 					}
 					//finally, make the player fall
 					you.y += you.vy;
