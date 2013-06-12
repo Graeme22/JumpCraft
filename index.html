@@ -295,7 +295,11 @@
 						}
 					}
 					//update char ay,vy
-					you.vy += you.ay / FPS;
+					if(you.y + you.vy < 450){
+						you.vy += you.ay / FPS;
+					} else if(level[block_under_steve] === 0){
+						you.vy += you.ay / FPS;
+					}
 					//kill monsters (and you)
 					for(var z in mobs){
 						if(you.y + 55 >= 430 && you.y + 55 <= 440 && you.x + 20 >= z * 16 + v + m && you.x <= z * 16 + v + 8 + m){
