@@ -366,7 +366,7 @@
 					//move monsters
 					m -= 1;
 					//collision detection
-					if(you.y + 55 >= 450 && you.x + 18 - v >= 0 && level[block_under_steve] !== 0){
+					if(you.y + 55 >= 450 && you.x + 18 - v >= 0 && you.x + 18 + (-v) <= level.length * 16 && level[block_under_steve] !== 0){
 						you.vy = 0;
 						if(alive){
 							you.y = 397;
