@@ -91,6 +91,10 @@
 						ctx.drawImage(coin,x,y);
 						break;
 					case 2:
+						coin.src = "ironIngot.png";
+						ctx.drawImage(coin,x,y);
+						break;
+					case 3:
 						coin.src = "diamond.png";
 						ctx.drawImage(coin,x,y);
 						break;
@@ -194,8 +198,8 @@
 				}
 			}
 			var coins_height3 = [0,1,2,0,1,2,0,1,2];
-			var coins_height2 = [0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,1,1];
-			var coins = [0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,0,2,0,0,1,1,0,0,1,0,1,0,0,0,2,1,0,0,1,0,1,0,0,0,1,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,2,2,1,2,1,2,0,2,1,2,0,0,0,0,0,0,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,2,2,2,1,1,1,2,2,1,2,2,1,2,2,1,2,2,2,2,1,1,2,2,0,0,2,2,0,0,0,2,2,0,0,0,0,2,2,2,0,0,0,0,1,1,1,2,0,0,1,1,1,0,0,1,0,1,0,1,0,1,2,2,1,2,1,1,2,2,1,1,0,1,2,1,2,1,2,1,2,1,2,1,2,2,1,2,2,0,0,2,2,1,2,1,2,2,1,2,1,2,2,1,2,0,0,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,2,2];
+			var coins_height2 = [0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,2,2,1,1];
+			var coins = [0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,0,2,0,0,1,1,0,0,1,0,1,0,0,0,2,1,0,0,1,0,1,0,0,0,1,0,0,0,2,2,2,0,0,0,0,3,0,0,0,0,2,2,1,2,1,2,0,2,1,2,0,0,0,0,0,0,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,2,2,2,1,1,1,2,2,1,2,2,1,2,2,1,2,2,2,2,1,1,2,2,0,0,2,2,0,0,0,2,2,0,0,0,0,2,2,2,0,0,0,0,1,1,1,2,0,0,1,1,1,0,0,1,0,1,0,1,0,1,2,2,1,2,1,1,2,2,1,1,0,1,2,1,2,1,2,1,2,1,2,1,2,2,1,2,2,0,0,2,2,1,2,1,2,2,1,2,1,2,2,1,2,0,0,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,3,0,0,2,2];
 			/*
 				0=no coin
 				1=coin
@@ -211,6 +215,17 @@
 			var money = 0;
 			function start(){
 				function draw(){
+					//draw portals
+					var portal = new Image();
+					portal.src = "portal.png";
+					ctx.drawImage(portal,v,386);
+					ctx.drawImage(portal,v,402);
+					ctx.drawImage(portal,v,418);
+					ctx.drawImage(portal,v,434);
+					ctx.drawImage(portal,level.length*16+v-16,386);
+					ctx.drawImage(portal,level.length*16+v-16,402);
+					ctx.drawImage(portal,level.length*16+v-16,418);
+					ctx.drawImage(portal,level.length*16+v-16,434);
 					//draw level
 					for(i=0;i<level.length;i++){
 						addBlock(level[i],i*16+v,450);
@@ -302,6 +317,9 @@
 						} else if(coins[z] === 2 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 355 && you.y <= 465){
 							coins[z] = 0;
 							money += 5;
+						} else if(coins[z] === 3 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 355 && you.y <= 465){
+							coins[z] = 0;
+							money += 100;
 						}
 					}
 					for(var z in coins_height2){
@@ -309,6 +327,9 @@
 							coins_height2[z] = 0;
 							money += 1;
 						} else if(coins_height2[z] === 2 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 255 && you.y <= 365){
+							coins_height2[z] = 0;
+							money += 5;
+						} else if(coins_height2[z] === 3 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 255 && you.y <= 365){
 							coins_height2[z] = 0;
 							money += 100;
 						}
@@ -318,6 +339,9 @@
 							coins_height3[z] = 0;
 							money += 1;
 						} else if(coins_height3[z] === 2 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 155 && you.y <= 265){
+							coins_height3[z] = 0;
+							money += 5;
+						} else if(coins_height3[z] === 3 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 155 && you.y <= 265){
 							coins_height3[z] = 0;
 							money += 100;
 						}
@@ -379,6 +403,8 @@
 						you.vy = 0;
 						you.y = 197;
 					}
+					//keep players from falling through w/ the acceleration glitch
+						//bug fix may wait until v0.5 or later
 					//finally, make the player fall
 					you.y += you.vy;
 					//end update function
