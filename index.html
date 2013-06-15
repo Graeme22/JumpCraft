@@ -216,67 +216,61 @@
 			var money = 0;
 			function start(){
 				function draw(){
-					switch(world){
-						case 1:
-							//draw portals
-							var portal = new Image();
-							portal.src = "portal.png";
-							ctx.drawImage(portal,v,386);
-							ctx.drawImage(portal,v,402);
-							ctx.drawImage(portal,v,418);
-							ctx.drawImage(portal,v,434);
-							ctx.drawImage(portal,level.length*16+v-16,386);
-							ctx.drawImage(portal,level.length*16+v-16,402);
-							ctx.drawImage(portal,level.length*16+v-16,418);
-							ctx.drawImage(portal,level.length*16+v-16,434);
-							//draw level
-							for(i=0;i<level.length;i++){
-								addBlock(level[i],i*16+v,450);
-							}
-							//height 2
-							for(i=0;i<level_height2.length;i++){
-								addBlock(level_height2[i],i*16+v,350);
-							}
-							//height 3
-							for(i=0;i<level_height3.length;i++){
-								addBlock(level_height3[i],i*16+v,250);
-							}
-							//coins
-							for(i=0;i<coins.length;i++){
-								addCoin(coins[i],i*16+v,410);
-							}
-							//height 2
-							for(i=0;i<coins_height2.length;i++){
-								addCoin(coins_height2[i],i*16+v,310);
-							}
-							//height 3
-							for(i=0;i<coins_height3.length;i++){
-								addCoin(coins_height3[i],i*16+v,210);
-							}
-							//lava
-							for(i=-50;i<level.length+50;i++){
-								ctx.drawImage(lava,i*16+v,466);
-								ctx.drawImage(lava,i*16+v,482);
-								ctx.drawImage(lava,i*16+v,498);
-							}
-							//mobs
-							for(i=0;i<mobs.length;i++){
-								addMob(mobs[i],i*16+v+m,432);
-							}
-							//height 2
-							for(i=0;i<mobs2.length;i++){
-								addMob(mobs2[i],i*16+v+m,332);
-							}
-							//height 3
-							for(i=0;i<mobs3.length;i++){
-								addMob(mobs3[i],i*16+v+m,232);
-							}
-							//character
-							ctx.drawImage(you.img,you.x,you.y,you.width,you.height);
-							break;
-						case 2:
-							break;
+					//draw portals
+					var portal = new Image();
+					portal.src = "portal.png";
+					ctx.drawImage(portal,v,386);
+					ctx.drawImage(portal,v,402);
+					ctx.drawImage(portal,v,418);
+					ctx.drawImage(portal,v,434);
+					ctx.drawImage(portal,level.length*16+v-16,386);
+					ctx.drawImage(portal,level.length*16+v-16,402);
+					ctx.drawImage(portal,level.length*16+v-16,418);
+					ctx.drawImage(portal,level.length*16+v-16,434);
+					//draw level
+					for(i=0;i<level.length;i++){
+						addBlock(level[i],i*16+v,450);
 					}
+					//height 2
+					for(i=0;i<level_height2.length;i++){
+						addBlock(level_height2[i],i*16+v,350);
+					}
+					//height 3
+					for(i=0;i<level_height3.length;i++){
+						addBlock(level_height3[i],i*16+v,250);
+					}
+					//coins
+					for(i=0;i<coins.length;i++){
+						addCoin(coins[i],i*16+v,410);
+					}
+					//height 2
+					for(i=0;i<coins_height2.length;i++){
+						addCoin(coins_height2[i],i*16+v,310);
+					}
+					//height 3
+					for(i=0;i<coins_height3.length;i++){
+						addCoin(coins_height3[i],i*16+v,210);
+					}
+					//lava
+					for(i=-50;i<level.length+50;i++){
+						ctx.drawImage(lava,i*16+v,466);
+						ctx.drawImage(lava,i*16+v,482);
+						ctx.drawImage(lava,i*16+v,498);
+					}
+					//mobs
+					for(i=0;i<mobs.length;i++){
+						addMob(mobs[i],i*16+v+m,432);
+					}
+					//height 2
+					for(i=0;i<mobs2.length;i++){
+						addMob(mobs2[i],i*16+v+m,332);
+					}
+					//height 3
+					for(i=0;i<mobs3.length;i++){
+						addMob(mobs3[i],i*16+v+m,232);
+					}
+					//character
+					ctx.drawImage(you.img,you.x,you.y,you.width,you.height);
 				};
 				function update(){
 					ctx.clearRect(0,0,700,500);
