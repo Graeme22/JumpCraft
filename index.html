@@ -301,7 +301,7 @@
 							money += 1;
 						} else if(coins[z] === 2 && you.x >= z * 16 + v - 10 && z * 16 + v + 10 >= you.x && you.y >= 355 && you.y <= 465){
 							coins[z] = 0;
-							money += 100;
+							money += 5;
 						}
 					}
 					for(var z in coins_height2){
@@ -358,7 +358,7 @@
 					}
 					//move monsters
 					m -= 1;
-					//collision detection
+					//collision detection for top of blocks
 					if(you.y + 55 >= 450 && you.x + 18 - v >= 0 && you.x + 18 + (-v) <= level.length * 16 && level[block_under_steve] !== 0){
 						you.vy = 0;
 						if(alive){
@@ -368,6 +368,16 @@
 						}
 					} else if(!alive){
 						you.y = 446;
+					}
+					//height 2
+					if(you.y + 55 >= 350 && you.y <= 300 && you.x + 18 - v >= 0 && you.x + 18 + (-v) <= level_height2.length * 16 && level_height2[block_under_steve] !== 0){
+						you.vy = 0;
+						you.y = 297;
+					}
+					//height 3
+					if(you.y + 55 >= 250 && you.y <= 200 && you.x + 18 - v >= 0 && you.x + 18 + (-v) <= level_height3.length * 16 && level_height3[block_under_steve] !== 0){
+						you.vy = 0;
+						you.y = 197;
 					}
 					//finally, make the player fall
 					you.y += you.vy;
