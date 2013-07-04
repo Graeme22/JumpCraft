@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+		<meta charset="utf-8"/>
         <title>JumpCraft</title>
     </head>
     <body id="body">
@@ -16,8 +17,6 @@
 				border-style: solid;
 			}
 			#logo {
-				width: 700px;
-				height: 100px;
 				display: block;
 				margin-left: 324px;
 				margin-top: 15px;
@@ -50,11 +49,8 @@
 		<h4 id="h4">A</h4>
 		<a id="link" href="http://html5-games.github.io/index.html"><img src="gdlogo.png"/></a>
 		<h4 id="h42">Game</h4>
+		<p id="p"></p>
 		<script type="text/javascript">
-			/*
-				v0.4 Beta
-			*/
-			
 			//start here
 			var world = 1;
 			var canvas = document.getElementById("canvas");
@@ -62,6 +58,7 @@
 			var FPS = 50;
 			var v = 0;
 			var m = 0;
+			var p = document.getElementById("p");
 			var mobs2 = [];
 			var mobs3 = [];
 			var text = "";
@@ -69,7 +66,7 @@
 				up: false,
 				left: false,
 				right: false
-			}
+			};
 			var you = {
 				img: new Image(),
 				x: 336,
@@ -79,11 +76,17 @@
 				width: 28,
 				height: 55,
 				onPig: false
-			}
+			};
 			you.img.src = "you.png";
 			var alive = true;
 			function addCoin(type,x,y){
 				coin = new Image();
+				/*
+					0=nothing
+					1=gold
+					2=iron
+					3=diamond
+				*/
 				switch(type){
 					case 0:
 						break;
@@ -103,8 +106,6 @@
 			}
 			function addMob(type,x,y){
 				mob = new Image();
-				//mobs just sit there until v0.3
-				
 				/*
 					0=nothing
 					1=zombie
@@ -214,8 +215,17 @@
 			var level_height2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,6,6];
 			var level = [1,1,2,3,4,5,6,7,8,9,1,1,2,3,4,5,6,7,8,9,5,6,7,5,6,7,5,6,7,6,6,6,0,0,0,0,0,4,5,8,8,2,1,7,8,9,5,4,6,8,5,2,4,8,6,2,5,4,8,9,8,7,7,5,6,4,5,2,4,0,0,0,6,5,8,9,7,5,5,6,5,4,5,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,5,6,5,4,5,6,5,4,6,5,4,6,5,4,6,5,4,6,5,4,6,5,5,4,6,5,4,6,5,4,6,5,5,4,5,6,6,6,6,6,5,4,6,6,6,6,5,4,6,0,0,0,0,0,0,8,8,8,5,5,6,6,6,6,6,6,6,6,0,6,0,5];
 			var money = 0;
-			function start(){
-				function draw(){
+			var mouse = {
+				x: 0,
+				y: 0
+			}
+			var Game = {
+				FPS: 20,
+				Tick: function(){
+					Game.Update();
+					Game.Draw();
+				},
+				Draw: function(){
 					//draw portals
 					var portal = new Image();
 					portal.src = "portal.png";
@@ -271,8 +281,9 @@
 					}
 					//character
 					ctx.drawImage(you.img,you.x,you.y,you.width,you.height);
-				};
-				function update(){
+				},
+				Update: function(){
+					p.innerHTML = "x: " + mouse.x + ", y: " + mouse.y + ", down? " + mouse.down
 					ctx.clearRect(0,0,700,500);
 					ctx.font = "25px Garamond";
 					block_under_steve = Math.round((-v + 336) / 16);
@@ -411,59 +422,74 @@
 					//change level
 						//coming in v0.5
 					//end update function
+				},
+				Distance: function(x,y,x2,y2){
+					var answer = (x2 - x)*(x2 - x) + (y2 - y)*(y2 - y);
+					answer = Math.round(Math.sqrt(answer));
+					return answer;
+				},
+				Random: function(min,max){
+					return Math.floor(Math.random() * (max - min + 1)) + min;
 				}
-				function tick(){
-					update();
-					draw();
-				}
-				document.onkeydown = function(e){
-					e = e || window.event;
-					c = e.keyCode;
-					switch(c){
-						case 38:
-						case 87:
-							keys.up = true;
-							break;
-						case 40:
-						case 83:
-							keys.down = true;
-							break;
-						case 37:
-						case 65:
-							keys.left = true;
-							break;
-						case 39:
-						case 68:
-							keys.right = true;
-							break;
-					}
-				}
-				document.onkeyup = function(e){
-					e = e || window.event;
-					r = e.keyCode;
-					switch(r){
-						case 38:
-						case 87:
-							keys.up = false;
-							break;
-						case 40:
-						case 83:
-							keys.down = false;
-							break;
-						case 37:
-						case 65:
-							keys.left = false;
-							break;
-						case 39:
-						case 68:
-							keys.right = false;
-							break;
-					}
-				}
-				setInterval(tick,1000/FPS);
 			};
-			start();
-		//end here
+			setInterval(Game.Tick,1000/Game.FPS);
+			document.onkeydown = function(e){
+				e = e || window.event;
+				c = e.keyCode;
+				switch(c){
+					case 38:
+					case 87:
+						keys.up = true;
+						break;
+					case 40:
+					case 83:
+						keys.down = true;
+						break;
+					case 37:
+					case 65:
+						keys.left = true;
+						break;
+					case 39:
+					case 68:
+						keys.right = true;
+						break;
+				}
+			};
+			document.onkeyup = function(e){
+				e = e || window.event;
+				r = e.keyCode;
+				switch(r){
+					case 38:
+					case 87:
+						keys.up = false;
+						break;
+					case 40:
+					case 83:
+						keys.down = false;
+						break;
+					case 37:
+					case 65:
+						keys.left = false;
+						break;
+					case 39:
+					case 68:
+						keys.right = false;
+						break;
+				}
+			};
+			document.onmousemove = function mouseMove(e){
+				e = e || window.event;
+				mouse.x = e.pageX - 333;
+				mouse.y = e.pageY - 122;
+			};
+			document.onmousedown = function mouseDown(e){
+				e = e || window.event;
+				mouse.down = true;
+			};
+			document.onmouseup = function mouseUp(e){
+				e = e || window.event;
+				mouse.down = false;
+			};
         </script>
     </body>
 </html>
