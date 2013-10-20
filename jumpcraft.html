@@ -58,6 +58,7 @@
 			var FPS = 50;
 			var v = 0;
 			var m = 0;
+			var slide = 0;
 			var p = document.getElementById("p");
 			var mobs2 = [];
 			var mobs3 = [];
@@ -315,6 +316,9 @@
 						alive = false;
 					}
 					if(alive){
+						ctx.fillText(text,10,20);
+					} else {
+						text = "Oops! To try again, press F5.";
 						ctx.fillText(text,10,20);
 					}
 					if(!alive){
